@@ -1,28 +1,32 @@
 part of 'home_bloc.dart';
 
 class HomeState extends Equatable {
-  final bool? isLoading;
-  final int? page;
-  final BookResponseModel? response;
+  final bool isLoading;
+  final String errorMsg;
+  final int page;
+  final List<BookModel> bookList;
 
   const HomeState({
     this.isLoading = false,
+    this.errorMsg = '',
     this.page = 0,
-    this.response,
+    this.bookList = const [],
   });
 
   HomeState copyWith({
     bool? isLoading,
+    String? errorMsg,
     int? page,
-    BookResponseModel? response,
+    List<BookModel>? bookList,
   }) {
     return HomeState(
       isLoading: isLoading ?? this.isLoading,
+      errorMsg: errorMsg ?? this.errorMsg,
       page: page ?? this.page,
-      response: response ?? this.response,
+      bookList: bookList ?? this.bookList,
     );
   }
 
   @override
-  List<Object?> get props => [isLoading, page];
+  List<Object?> get props => [isLoading, errorMsg, page, bookList];
 }

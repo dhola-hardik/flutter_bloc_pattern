@@ -6,14 +6,7 @@ import 'ui/bloc/home_bloc.dart';
 import 'ui/home_page.dart';
 
 void main() {
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<HomeBloc>(create: (context) => HomeBloc(BookRepository())),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,11 +15,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (BuildContext context) {},
-      child: MaterialApp(
-        title: 'Flutter Bloc Pattern',
-        theme: ThemeData(primarySwatch: Colors.blue),
-        home: const HomePage(),
+      create: (BuildContext context) => BookRepository(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<HomeBloc>(
+            create: (context) => HomeBloc(BookRepository()),
+          ),
+        ],
+        child: MaterialApp(
+          title: 'Bloc Pattern Pagination',
+          theme: ThemeData(primarySwatch: Colors.blue),
+          home: const HomePage(),
+        ),
       ),
     );
   }

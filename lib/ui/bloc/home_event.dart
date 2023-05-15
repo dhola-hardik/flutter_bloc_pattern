@@ -1,13 +1,21 @@
 part of 'home_bloc.dart';
 
-@immutable
-abstract class HomeEvent {}
+abstract class HomeEvent extends Equatable {}
 
-class FetchBooksData extends HomeEvent {
-  final int page;
+class FetchBooks extends HomeEvent {
+  final String? searchText;
 
-  FetchBooksData(this.page);
+  FetchBooks({this.searchText});
 
   @override
-  List<Object?> get props => [page];
+  List<Object?> get props => [searchText];
+}
+
+class FetchMoreBooks extends HomeEvent {
+  final String? searchText;
+
+  FetchMoreBooks({this.searchText});
+
+  @override
+  List<Object?> get props => [searchText];
 }
