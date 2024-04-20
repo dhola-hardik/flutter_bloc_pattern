@@ -40,7 +40,11 @@ jobs:
             cached_previous_version=$(grep 'previous_version:' version/version.txt | awk '{print $2}')
             cached_updated_version=$(grep 'updated_version:' version/version.txt | awk '{print $2}')
             if [ "${cached_previous_version}" == "${PREVIOUS_VERSION}" ]; then
-              UPDATED_VERSION=$(echo "${cached_updated_version}" | awk -F'[+.]' '{$NF = $NF + 1; OFS="."; print}')
+              IFS='.' read -r -a version_components <<< "${cached_updated_version}"
+              build_number=${version_components[-1]}
+              ((build_number++))
+              version_components[-1]=$build_number
+              UPDATED_VERSION=$(IFS='.'; echo "${version_components[*]}")
               echo "Updated version incremented to: ${UPDATED_VERSION}"
               echo "UPDATED_VERSION=${UPDATED_VERSION}" >> $GITHUB_ENV
             fi
