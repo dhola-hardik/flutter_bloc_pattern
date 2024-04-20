@@ -37,5 +37,5 @@ jobs:
 
       - name: Use cached version
         if: steps.cache.outputs.cache-hit == 'true'
-        run:
+        run: |
           echo "Using cached version: $(cat version/version.txt)"
