@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: version
-          key: version-${{ env.PREVIOUS_VERSION }}-${{ env.UPDATED_VERSION }}-${{ runner.os }}
+          key: version-flutter
 
       - name: Check if version is cached
         run: |
@@ -34,13 +34,25 @@ jobs:
             echo "Version is not cached"
           fi
 
+      - name: Increment updated version if necessary
+        run: |
+          if [ -f version/version.txt ]; then
+            cached_previous_version=$(grep 'previous_version:' version/version.txt | awk '{print $2}')
+            cached_updated_version=$(grep 'updated_version:' version/version.txt | awk '{print $2}')
+            if [ "${cached_previous_version}" == "${PREVIOUS_VERSION}" ]; then
+              UPDATED_VERSION=$(echo "${cached_updated_version}" | awk -F'[+.]' '{$NF = $NF + 1; OFS="."; print}')
+              echo "Updated version incremented to: ${UPDATED_VERSION}"
+              echo "UPDATED_VERSION=${UPDATED_VERSION}" >> $GITHUB_ENV
+            fi
+          fi
+
       - name: Save version to cache
         run: |
           echo "previous_version: ${{ env.PREVIOUS_VERSION }}" > version.txt
           echo "updated_version: ${{ env.UPDATED_VERSION }}" >> version.txt
           mkdir -p version
           mv version.txt version/
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true' || steps.cache.outputs.cache-hit == 'true' && steps.cache.outputs.cache-hit == 'true'
 
       - name: Use cached version
         if: steps.cache.outputs.cache-hit == 'true'
