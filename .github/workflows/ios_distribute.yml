@@ -48,14 +48,13 @@ jobs:
               echo "UPDATED_VERSION=${UPDATED_VERSION}" >> $GITHUB_ENV
             fi
           fi
-        if: steps.cache.outputs.cache-hit == 'true'
 
       - name: Save version to cache
         run: |
           mkdir -p version
           echo "previous_version: ${{ env.PREVIOUS_VERSION }}" > version/version.txt
           echo "updated_version: ${{ env.UPDATED_VERSION }}" >> version/version.txt
-        if: steps.cache.outputs.cache-hit != 'true' || steps.cache.outputs.cache-hit == 'true' && steps.cache.outputs.cache-hit == 'true'
+        if: always() || steps.cache.outputs.cache-hit == 'true'
 
 #      - name: Use cached version
 #        if: steps.cache.outputs.cache-hit == 'true'
