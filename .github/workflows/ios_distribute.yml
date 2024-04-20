@@ -30,15 +30,14 @@ jobs:
         run: |
           if [ -f version/version.txt ]; then
             echo "Version is cached: $(cat version/version.txt)"
-            cat version/version.txt
           else
             echo "Version is not cached"
           fi
 
       - name: Save version to cache
         run: |
-          echo "previous_version: ${{ env.PREVIOUS_VERSION }}" > version/version.txt
-          echo "updated_version: ${{ env.UPDATED_VERSION }}" >> version/version.txt
+          echo "previous_version: ${{ env.PREVIOUS_VERSION }}" > version.txt
+          echo "updated_version: ${{ env.UPDATED_VERSION }}" >> version.txt
           mkdir -p version
           mv version.txt version/
         if: steps.cache.outputs.cache-hit != 'true'
