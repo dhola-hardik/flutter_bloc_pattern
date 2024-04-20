@@ -15,11 +15,11 @@ dependencies:
     sdk: flutter
 
   # State management
-  flutter_bloc: ^8.1.2
+  flutter_bloc: ^8.1.5
   equatable: ^2.0.5
 
   # Api call
-  http: ^0.13.6
+  http: ^1.2.1
 
   # UI
   pull_to_refresh: ^2.0.0

@@ -1,0 +1,41 @@
+name: Cache Version
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Restore version from cache
+        uses: actions/cache@v2
+        with:
+          path: version
+          key: version-${{ runner.os }}
+
+      - name: Check if version is cached
+        run: |
+          if [ -f version/version.txt ]; then
+            echo "Version is cached: $(cat version/version.txt)"
+          else
+            echo "Version is not cached"
+          fi
+
+      - name: Save version to cache
+        run: |
+          echo "1.0.0" > version.txt
+          mkdir -p version
+          mv version.txt version/
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Save version to cache
+        uses: actions/cache@v2
+        with:
+          path: version
+          key: version-${{ runner.os }}
