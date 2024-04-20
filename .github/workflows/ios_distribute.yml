@@ -52,10 +52,9 @@ jobs:
 
       - name: Save version to cache
         run: |
-          echo "previous_version: ${{ env.PREVIOUS_VERSION }}" > version.txt
-          echo "updated_version: ${{ env.UPDATED_VERSION }}" >> version.txt
           mkdir -p version
-          mv version.txt version/
+          echo "previous_version: ${{ env.PREVIOUS_VERSION }}" > version/version.txt
+          echo "updated_version: ${{ env.UPDATED_VERSION }}" >> version/version.txt
         if: steps.cache.outputs.cache-hit != 'true' || steps.cache.outputs.cache-hit == 'true' && steps.cache.outputs.cache-hit == 'true'
 
       - name: Use cached version
