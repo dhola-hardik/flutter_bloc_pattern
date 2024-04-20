@@ -1,4 +1,4 @@
-name: Cache Version
+name: Cache Flutter App Version
 
 on:
   push:
@@ -13,12 +13,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Read version from pubspec.yaml
+        id: read-version
+        run: echo "::set-output name=version::$(grep 'version:' pubspec.yaml | awk '{print $2}')"
+
       - name: Restore version from cache
         id: cache
         uses: actions/cache@v2
         with:
           path: version
-          key: version-${{ runner.os }}
+          key: version-${{ steps.read-version.outputs.version }}-${{ runner.os }}
 
       - name: Check if version is cached
         run: |
@@ -28,9 +32,9 @@ jobs:
             echo "Version is not cached"
           fi
 
-      - name: Create version.txt file
+      - name: Save version to cache
         run: |
-          echo "1.0.0" > version.txt
+          echo "${{ steps.read-version.outputs.version }}" > version.txt
           mkdir -p version
           mv version.txt version/
         if: steps.cache.outputs.cache-hit != 'true'
