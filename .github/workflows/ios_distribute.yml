@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: version
-          key: version-flutter-${{ runner.os }}
+          key: version-${{ env.PREVIOUS_VERSION }}-${{ env.UPDATED_VERSION }}-${{ runner.os }}
 
       - name: Check if version is cached
         run: |
@@ -57,8 +57,7 @@ jobs:
           echo "updated_version: ${{ env.UPDATED_VERSION }}" >> version/version.txt
         if: always()
 
-      - name: Cache versions
-        uses: actions/cache@v2
-        with:
-          path: version
-          key: version-flutter-${{ runner.os }}
+      - name: Use cached version
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: |
+          echo "Using cached version: $(cat version/version.txt)"
