@@ -13,31 +13,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Generate random number
-        id: random
-        run: echo "RANDOM_NUMBER=$(shuf -i 1-100 -n 1)" >> $GITHUB_ENV
+      - name: Read version from pubspec.yaml
+        id: read-version
+        run: |
+          echo "PREVIOUS_VERSION=$(grep 'version:' pubspec.yaml | awk '{print $2}')" >> $GITHUB_ENV
+          echo "UPDATED_VERSION=$(cat pubspec.yaml | grep 'version:' | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Restore version from cache
-        id: cache
+        uses: actions/cache@v2
+        id: restore-cache
+        with:
+          path: version
+          key: ${{ runner.os }}-version-${{ hashFiles('version/*') }}
+
+      - name: Generate and save random number
+        run: |
+          echo "random_number: $RANDOM" > version.txt
+          echo "Updated version file:"
+          cat version.txt
+
+      - name: Save updated content to cache
         uses: actions/cache@v2
         with:
-          path: cached_value.txt
-          key: cached-value
+          path: version
+          key: ${{ runner.os }}-version-${{ hashFiles('version/*') }}
 
-      - name: Compare cached value
-        run: |
-          if [ -f cached_value.txt ]; then
-            cached_value=$(cat cached_value.txt)
-            echo "Cached value: $cached_value"
-            if [ "$cached_value" != "${{ env.RANDOM_NUMBER }}" ]; then
-              echo "CACHE_CHANGED=true" >> $GITHUB_ENV
-            else
-              echo "CACHE_CHANGED=false" >> $GITHUB_ENV
-            fi
-          else
-            echo "CACHE_CHANGED=true" >> $GITHUB_ENV
-          fi
-
-      - name: Save random number to cache
-        if: env.CACHE_CHANGED == 'true'
-        run: echo "${{ env.RANDOM_NUMBER }}" > cached_value.txt
+#      - name: Use cached version
+#        if: steps.cache.outputs.cache-hit == 'true'
+#        run: |
+#          echo "Using cached version: $(cat version/version.txt)"
