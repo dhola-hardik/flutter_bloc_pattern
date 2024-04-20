@@ -58,7 +58,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true' || steps.cache.outputs.cache-hit == 'true' && steps.cache.outputs.cache-hit == 'true'
 
       - name: Cache versions
-          uses: actions/cache@v2
-          with:
-            path: version
-            key: version-${{ env.PREVIOUS_VERSION }}-${{ env.UPDATED_VERSION }}-${{ runner.os }}
+        uses: actions/cache@v2
+        with:
+          path: version
+          key: version-${{ env.PREVIOUS_VERSION }}-${{ env.UPDATED_VERSION }}-${{ runner.os }}
